@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -23,7 +24,8 @@ import javax.sql.DataSource;
 import static com.in28minutes.learnspringsecurity.basic.Role.*;
 import static org.springframework.security.config.Customizer.withDefaults;
 
-//@Configuration
+@Configuration
+@EnableMethodSecurity(jsr250Enabled = true,securedEnabled = true)
 public class BasicAuthSecurityConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -62,12 +64,12 @@ public class BasicAuthSecurityConfiguration {
 //                .password("{noop}dummy")
                 .password("dummy")
                 .passwordEncoder(str -> passwordEncoder().encode(str))
-                .roles(String.valueOf(ADMIN)).build();
+                .roles("ADMIN").build();
         var admin = User.withUsername("admin")
 //                .password("{noop}dummy")
                 .password("dummy")
                 .passwordEncoder(str -> passwordEncoder().encode(str))
-                .roles(String.valueOf(USER)).build();
+                .roles("USER").build();
 
         var jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
         jdbcUserDetailsManager.createUser(user);
